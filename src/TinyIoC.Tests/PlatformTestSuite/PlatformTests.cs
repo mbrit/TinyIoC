@@ -36,7 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if WINRT
+#if NETFX_CORE
 using System.Reflection;
 #endif
 
@@ -297,11 +297,7 @@ namespace TinyIoC.Tests.PlatformTestSuite
         private bool AutoRegisterAssemblySpecified(TinyIoCContainer container, ILogger logger)
         {
             logger.WriteLine("AutoRegisterAssemblySpecified");
-#if WINRT
-            container.AutoRegister(new[] { this.GetType().GetTypeInfo().Assembly });
-#else
-            container.AutoRegister(new[] { this.GetType().Assembly });
-#endif
+            container.AutoRegister(new[] { this.GetType().GetAssembly() });
             container.Resolve<ITestInterface>();
             return true;
         }

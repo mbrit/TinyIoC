@@ -78,8 +78,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v1.0\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

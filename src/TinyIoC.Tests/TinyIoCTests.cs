@@ -1087,6 +1087,8 @@ namespace TinyIoC.Tests
             container.Register<TestClassDefaultCtor>(new TestClassDefaultCtor()).WithWeakReference();
         }
 
+// @mbrit - 2012-05-22 - forced GC not supported in WinRT...
+#if !NETFX_CORE
         [TestMethod]
         public void Resolve_OutOfScopeStrongReferencedInstance_ResolvesCorrectly()
         {
@@ -1099,8 +1101,10 @@ namespace TinyIoC.Tests
             var result = container.Resolve<TestClassDefaultCtor>();
             Assert.AreEqual("Testing", result.Prop1);
         }
+#endif
 
-
+// @mbrit - 2012-05-22 - forced GC not supported in WinRT...
+#if !NETFX_CORE
         [TestMethod]
         [ExpectedException(typeof(TinyIoCResolutionException))]
         public void Resolve_OutOfScopeWeakReferencedInstance_ThrowsCorrectException()
@@ -1114,7 +1118,10 @@ namespace TinyIoC.Tests
             var result = container.Resolve<TestClassDefaultCtor>();
             Assert.AreEqual("Testing", result.Prop1);
         }
+#endif
 
+// @mbrit - 2012-05-22 - forced GC not supported in WinRT...
+#if !NETFX_CORE
         [TestMethod]
         public void Resolve_OutOfScopeStrongReferencedFactory_ResolvesCorrectly()
         {
@@ -1127,8 +1134,10 @@ namespace TinyIoC.Tests
             var result = container.Resolve<TestClassDefaultCtor>();
             Assert.AreEqual("Testing", result.Prop1);
         }
+#endif
 
-
+// @mbrit - 2012-05-22 - forced GC not supported in WinRT...
+#if !NETFX_CORE
         [TestMethod]
         [ExpectedException(typeof(TinyIoCResolutionException))]
         public void Resolve_OutOfScopeWeakReferencedFactory_ThrowsCorrectException()
@@ -1142,6 +1151,7 @@ namespace TinyIoC.Tests
             var result = container.Resolve<TestClassDefaultCtor>();
             Assert.AreEqual("Testing", result.Prop1);
         }
+#endif
 
         [TestMethod]
         public void Register_InterfaceAndImplementationWithInstance_Registers()
@@ -1418,14 +1428,14 @@ namespace TinyIoC.Tests
         {
             var container = UtilityMethods.GetContainer();
 
-            container.AutoRegister(new[] { this.GetType().Assembly });
+            container.AutoRegister(new[] { this.GetType().GetAssembly() });
         }
 
         [TestMethod]
         public void AutoRegister_TestAssembly_CanResolveInterface()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { this.GetType().Assembly });
+            container.AutoRegister(new[] { this.GetType().GetAssembly() });
 
             var result = container.Resolve<ITestInterface>();
 
@@ -1436,7 +1446,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_TestAssembly_CanResolveAbstractBaseClass()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { this.GetType().Assembly });
+            container.AutoRegister(new[] { this.GetType().GetAssembly() });
 
             var result = container.Resolve<TestClassBase>();
 
@@ -1448,7 +1458,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_TinyIoCAssembly_CannotResolveInternalTinyIoCClass()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { container.GetType().Assembly });
+            container.AutoRegister(new[] { container.GetType().GetAssembly() });
 
             var output = container.Resolve<TinyIoCContainer.TypeRegistration>(new NamedParameterOverloads() { { "type", this.GetType() } }, new ResolveOptions() { UnregisteredResolutionAction = UnregisteredResolutionActions.Fail });
 
@@ -1460,7 +1470,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_ThisAssemblySpecifiedIgnoreDuplicatesOff_ThrowsException()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { this.GetType().Assembly }, false);
+            container.AutoRegister(new[] { this.GetType().GetAssembly() }, false);
             Assert.IsTrue(false);
         }
 
@@ -1468,7 +1478,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_TinyIoCAssemblySpecifiedIgnoreDuplicatesOff_NoErrors()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { typeof(TinyIoCContainer).Assembly }, false);
+            container.AutoRegister(new[] { typeof(TinyIoCContainer).GetAssembly() }, false);
         }
 
         [TestMethod]
@@ -1830,7 +1840,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_IEnumerableAssemblies_DoesNotThrow()
         {
             var container = UtilityMethods.GetContainer();
-            List<Assembly> assemblies = new List<Assembly>() { this.GetType().Assembly, typeof(ExternalTypes.IExternalTestInterface).Assembly };
+            List<Assembly> assemblies = new List<Assembly>() { this.GetType().GetAssembly(), typeof(ExternalTypes.IExternalTestInterface).GetAssembly() };
 
             container.AutoRegister(assemblies);
         }
@@ -1839,7 +1849,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_IEnumerableAssemblies_TypesFromBothAssembliesResolve()
         {
             var container = UtilityMethods.GetContainer();
-            List<Assembly> assemblies = new List<Assembly>() { this.GetType().Assembly, typeof(ExternalTypes.IExternalTestInterface).Assembly };
+            List<Assembly> assemblies = new List<Assembly>() { this.GetType().GetAssembly(), typeof(ExternalTypes.IExternalTestInterface).GetAssembly() };
 
             container.AutoRegister(assemblies);
 
@@ -3196,7 +3206,7 @@ namespace TinyIoC.Tests
         public void AutoRegister_TypeExcludedViaPredicate_FailsToResolveType()
         {
             var container = UtilityMethods.GetContainer();
-            container.AutoRegister(new[] { this.GetType().Assembly }, t => t != typeof(ITestInterface));
+            container.AutoRegister(new[] { this.GetType().GetAssembly() }, t => t != typeof(ITestInterface));
 
             var result = ExceptionHelper.Record(() => container.Resolve<ITestInterface>());
 
